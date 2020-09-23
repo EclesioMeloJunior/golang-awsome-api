@@ -1,0 +1,6 @@
+openapi: 3.0.1
+info:
+  title: DotNet Challenge 20200902
+  description: CRUD Products
+  version: '0.1'
+
