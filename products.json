@@ -7,7 +7,6 @@
    "created_t": 1415302075,
    "last_modified_t": 1572265837,
    "product_name": "Madalenas quadradas",
-   "generic_name": "",
    "quantity": "380 g (6 x 2 u.)",
    "brands": "La Cestera",
    "categories": "Lanches comida, Lanches doces, Biscoitos e Bolos, Bolos, Madalenas",
@@ -22,12 +21,5 @@
    "nutriscore_score": 17,
    "nutriscore_grade": "d",
    "main_category": "en:madeleines",
-   "image_url": "https://static.openfoodfacts.org/images/products/20221126/front_pt.5.400.jpg",
-   "image_small_url": "https://static.openfoodfacts.org/images/products/20221126/front_pt.5.200.jpg",
-   "image_front_url": "https://static.openfoodfacts.org/images/products/20221126/front_pt.5.400.jpg",
-   "image_front_small_url": "https://static.openfoodfacts.org/images/products/20221126/front_pt.5.200.jpg",
-   "image_ingredients_url": "",
-   "image_ingredients_small_url": "",
-   "image_nutrition_url": "https://static.openfoodfacts.org/images/products/20221126/nutrition_pt.15.400.jpg",
-   "image_nutrition_small_url": "https://static.openfoodfacts.org/images/products/20221126/nutrition_pt.15.200.jpg",
- }]
+   "image_url": "https://static.openfoodfacts.org/images/products/20221126/front_pt.5.400.jpg"
+}]
