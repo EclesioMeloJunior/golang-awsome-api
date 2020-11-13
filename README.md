@@ -1,6 +1,5 @@
 # Go Challenge 20200923
 
-
 ## Introdução
 
 Nesse desafio trabalharemos no desenvolvimento de uma REST API para utilizar os dados do projeto Open Food Facts, que é um banco de dados aberto com informação nutricional de diversos produtos alimentícios.
@@ -41,7 +40,10 @@ Onde cada linha representa um arquivo que está disponível em https://static.op
 
 É recomendável utilizar uma Collection secundária para controlar os históricos das importações e facilitar a validação durante a execução.
 
-Nota: Importante lembrar que todos os dados deverão ter os campos personalizados `imported_t` e `status`.
+Ter em conta que:
+
+- Todos os produtos deverão ter os campos personalizados `imported_t` e `status`.
+- Limitar a importação a somente 100 produtos;
 
 ### A REST API
 
