@@ -36,7 +36,7 @@ A lista de arquivos do Open Food, pode ser encontrada em:
 
 - https://static.openfoodfacts.org/data/delta/index.txt
 
-Onde cada linha representa um arquivo que está disponível em https://static.openfoodfacts.org/data/delta/{filename}. O nome do arquivo contém o timestamp UNIX da primeira e última alteração contida no arquivo JSON, para que os arquivos possam ser importados (após extracção) em ordem alfabética.
+Onde cada linha representa um arquivo que está disponível em https://static.openfoodfacts.org/data/delta/{filename}. O nome do arquivo contém o timestamp UNIX da primeira e última alteração contida no arquivo JSON, para que os arquivos possam ser importados (após extracção) ordenados.
 
 É recomendável utilizar uma Collection secundária para controlar os históricos das importações e facilitar a validação durante a execução.
 
