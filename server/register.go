@@ -1,7 +1,7 @@
 package server
 
 import (
-	"net/http"
+	"go-challenge/internals/handlers"
 
 	"github.com/labstack/echo/v4"
 )
@@ -9,10 +9,8 @@ import (
 // NewRegister will setup the middlewares
 // request endpoint handlers and inject
 // the necessary dependecies
-func NewRegister(e *echo.Echo) {
+func NewRegister(e *echo.Echo, hcHandler *handlers.Healthcheck) {
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello World")
-	})
+	e.GET("/", hcHandler.GetAPIStatus)
 
 }

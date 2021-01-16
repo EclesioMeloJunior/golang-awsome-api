@@ -5,15 +5,20 @@ import (
 	"log"
 	"time"
 
-	"go-challenge/internals/server"
+	"go-challenge/internals/handlers"
+	"go-challenge/internals/services"
+	"go-challenge/server"
 
 	"go.uber.org/fx"
 )
 
 func main() {
-
 	app := fx.New(
 		fx.Provide(
+			services.NewHealthcheck,
+
+			handlers.NewHealthcheckHandler,
+
 			server.NewServer,
 		),
 

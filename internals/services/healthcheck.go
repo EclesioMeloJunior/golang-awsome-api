@@ -1,18 +1,6 @@
-package healthcheck
+package services
 
 import "time"
-
-// Status struct define a simple fields
-// to get the application status
-type Status struct {
-	OnlineT  time.Time `json:"online_t"`
-	MemUsage float64   `json:"mem_usage"`
-	LastSync time.Time `json:"last_sync"`
-	Database struct {
-		Status      string `json:"status"`
-		Description string `json:"description"`
-	} `json:"database"`
-}
 
 // Healthcheck interface define functions
 // that returns the database connection status
@@ -20,10 +8,15 @@ type Status struct {
 type Healthcheck interface {
 	DatabaseReady() (bool, error)
 	LastSyncExecution() (time.Time, error)
-	System() (time.Time, float64)
+	GetMemUsage() float64
+
+	SetOnlineSince(time.Time)
+	OnlineSince() time.Duration
 }
 
-type hc struct{}
+type hc struct {
+	onlineSince time.Time
+}
 
 // NewHealthcheck returns an implementation of Healthcheck interface
 func NewHealthcheck() Healthcheck {
@@ -38,6 +31,14 @@ func (h *hc) LastSyncExecution() (time.Time, error) {
 	return time.Now(), nil
 }
 
-func (h *hc) System() (time.Time, float64) {
-	return time.Now(), 0
+func (h *hc) GetMemUsage() float64 {
+	return 0
+}
+
+func (h *hc) SetOnlineSince(t time.Time) {
+	h.onlineSince = t
+}
+
+func (h *hc) OnlineSince() time.Duration {
+	return time.Since(h.onlineSince)
 }
