@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"go-challenge/config"
 	"go-challenge/internals/handlers"
 	"go-challenge/internals/services"
 	"go-challenge/server"
@@ -15,10 +16,9 @@ import (
 func main() {
 	app := fx.New(
 		fx.Provide(
+			config.NewConfig,
 			services.NewHealthcheck,
-
 			handlers.NewHealthcheckHandler,
-
 			server.NewServer,
 		),
 
