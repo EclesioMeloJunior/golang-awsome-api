@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"go-challenge/internals/models"
 	"go-challenge/internals/services"
 	"net/http"
@@ -26,9 +27,17 @@ func (h *Healthcheck) GetAPIStatus(e echo.Context) error {
 	var err error
 	status := new(models.Status)
 
-	status.Database.Description = "All database checks are done"
-	status.Database.Status = "OK"
-	status.MemUsage = h.hcService.GetMemUsage()
+	dbReady, err := h.hcService.DatabaseReady()
+
+	if err != nil || !dbReady {
+		status.Database.Description = err.Error()
+		status.Database.Status = "FAIL"
+	} else {
+		status.Database.Description = "All database checks are done"
+		status.Database.Status = "OK"
+	}
+
+	status.MemUsage = fmt.Sprintf("%v MiB", h.hcService.GetMemUsage()/1024/1024)
 	status.OnlineT = h.hcService.OnlineSince().String()
 
 	if status.LastSync, err = h.hcService.LastSyncExecution(); err != nil {

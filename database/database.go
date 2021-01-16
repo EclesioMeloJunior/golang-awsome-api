@@ -12,7 +12,7 @@ import (
 
 // NewConnection will manage when the database connects
 // and will stop connection when application shutdown
-func NewConnection(lc fx.Lifecycle, c *config.Config) *mongo.Client {
+func NewConnection(lc fx.Lifecycle, c *config.Config) *mongo.Database {
 	client, err := mongo.NewClient(options.Client().ApplyURI(c.ConnStr))
 
 	if err != nil {
@@ -30,5 +30,5 @@ func NewConnection(lc fx.Lifecycle, c *config.Config) *mongo.Client {
 		},
 	})
 
-	return client
+	return client.Database(c.DatabaseName)
 }

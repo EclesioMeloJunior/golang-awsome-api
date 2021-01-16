@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"go-challenge/config"
+	"go-challenge/database"
 	"go-challenge/internals/handlers"
 	"go-challenge/internals/services"
 	"go-challenge/server"
@@ -17,12 +18,18 @@ func main() {
 	app := fx.New(
 		fx.Provide(
 			config.NewConfig,
+			database.NewConnection,
+		),
+
+		fx.Provide(
 			services.NewHealthcheck,
 			handlers.NewHealthcheckHandler,
 			server.NewServer,
 		),
 
-		fx.Invoke(server.NewRegister),
+		fx.Invoke(
+			server.NewRegister,
+		),
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
