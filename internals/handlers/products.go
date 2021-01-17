@@ -28,8 +28,14 @@ func (p *Products) Import(e echo.Context) error {
 	imports, err := p.importationService.ToBeImported(filenames)
 
 	if err != nil {
-		return e.JSON(http.StatusInternalServerError, err)
+		return e.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return e.JSON(http.StatusOK, imports)
+	product, err := p.importationService.ImportFiles(imports)
+
+	if err != nil {
+		return e.String(http.StatusInternalServerError, err.Error())
+	}
+
+	return e.JSON(http.StatusOK, product)
 }

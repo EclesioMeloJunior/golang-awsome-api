@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"strconv"
+	"strings"
+)
 
 // ProductStatus enum the product status model
 type ProductStatus string
@@ -12,16 +15,29 @@ const (
 	Published               = "published"
 )
 
+type productFloat int
+
+func (p *productFloat) UnmarshalJSON(data []byte) error {
+	f, err := strconv.ParseFloat(strings.Trim(string(data), "\"\""), 64)
+
+	if err != nil {
+		return err
+	}
+
+	(*p) = productFloat(f)
+	return nil
+}
+
 // Product defines the model from
 // OpenFoodFacts and the model that will be inserted at db
 type Product struct {
-	Code            int           `json:"code"`
+	Code            string        `json:"code"`
 	Status          ProductStatus `json:"status"`
-	ImportedT       time.Time     `json:"imported_t"`
+	ImportedT       int           `json:"imported_t"`
 	URL             string        `json:"url"`
 	Creator         string        `json:"creator"`
-	CreatedT        time.Time     `json:"created_t"`
-	LastModifiedT   time.Time     `json:"last_modified_t"`
+	CreatedT        int           `json:"created_t"`
+	LastModifiedT   int           `json:"last_modified_t"`
 	ProductName     string        `json:"product_name"`
 	Quantity        string        `json:"quantity"`
 	Brands          string        `json:"brands"`
@@ -33,7 +49,7 @@ type Product struct {
 	IngredientsText string        `json:"ingredients_text"`
 	Traces          string        `json:"traces"`
 	ServingSize     string        `json:"serving_size"`
-	ServingQuantity float64       `json:"serving_quantity"`
+	ServingQuantity productFloat  `json:"serving_quantity"`
 	NutriscoreScore int           `json:"nutriscore_score"`
 	NutriscoreGrage string        `json:"nutriscore_grade"`
 	MainCategory    string        `json:"main_category"`

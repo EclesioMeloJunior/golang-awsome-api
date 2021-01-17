@@ -38,8 +38,15 @@ func (i *importation) GetAllImports() ([]models.Import, error) {
 	}
 
 	imports := make([]models.Import, 0)
-	if err = c.Decode(imports); err != nil {
-		return nil, err
+
+	for c.Next(ctx) {
+		i := models.Import{}
+
+		if err = c.Decode(&i); err != nil {
+			return nil, err
+		}
+
+		imports = append(imports, i)
 	}
 
 	return imports, nil
