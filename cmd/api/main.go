@@ -8,7 +8,9 @@ import (
 	"go-challenge/config"
 	"go-challenge/database"
 	"go-challenge/internals/handlers"
+	"go-challenge/internals/repository"
 	"go-challenge/internals/services"
+	"go-challenge/pkg/httpclient"
 	"go-challenge/server"
 
 	"go.uber.org/fx"
@@ -19,11 +21,18 @@ func main() {
 		fx.Provide(
 			config.NewConfig,
 			database.NewConnection,
+			httpclient.NewHTTPClient,
+		),
+
+		fx.Provide(
+			repository.NewImportation,
 		),
 
 		fx.Provide(
 			services.NewHealthcheck,
+			services.NewImportation,
 			handlers.NewHealthcheckHandler,
+			handlers.NewProductsHandler,
 			server.NewServer,
 		),
 

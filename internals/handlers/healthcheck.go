@@ -39,10 +39,7 @@ func (h *Healthcheck) GetAPIStatus(e echo.Context) error {
 
 	status.MemUsage = fmt.Sprintf("%v MiB", h.hcService.GetMemUsage()/1024/1024)
 	status.OnlineT = h.hcService.OnlineSince().String()
-
-	if status.LastSync, err = h.hcService.LastSyncExecution(); err != nil {
-		return e.String(http.StatusBadRequest, err.Error())
-	}
+	status.LastSync = h.hcService.LastSyncExecution()
 
 	return e.JSON(http.StatusOK, status)
 }

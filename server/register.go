@@ -9,8 +9,9 @@ import (
 // NewRegister will setup the middlewares
 // request endpoint handlers and inject
 // the necessary dependecies
-func NewRegister(e *echo.Echo, hcHandler *handlers.Healthcheck) {
+func NewRegister(e *echo.Echo, hc *handlers.Healthcheck, p *handlers.Products) {
 
-	e.GET("/", hcHandler.GetAPIStatus)
+	e.GET("/", hc.GetAPIStatus)
+	e.GET("/import", p.Import)
 
 }

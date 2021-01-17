@@ -14,14 +14,17 @@ import (
 // last time the sync was done and the system status
 type Healthcheck interface {
 	DatabaseReady() (bool, error)
-	LastSyncExecution() (time.Time, error)
+	LastSyncExecution() time.Time
 	GetMemUsage() uint64
 
 	SetOnlineSince(time.Time)
 	OnlineSince() time.Duration
+
+	SetLastSync(time.Time)
 }
 
 type hc struct {
+	lastSync    time.Time
 	onlineSince time.Time
 	mongo       *mongo.Database
 }
@@ -76,8 +79,8 @@ func (h *hc) DatabaseReady() (bool, error) {
 	return true, nil
 }
 
-func (h *hc) LastSyncExecution() (time.Time, error) {
-	return time.Now(), nil
+func (h *hc) LastSyncExecution() time.Time {
+	return h.lastSync
 }
 
 func (h *hc) GetMemUsage() uint64 {
@@ -89,6 +92,10 @@ func (h *hc) GetMemUsage() uint64 {
 
 func (h *hc) SetOnlineSince(t time.Time) {
 	h.onlineSince = t
+}
+
+func (h *hc) SetLastSync(t time.Time) {
+	h.lastSync = t
 }
 
 func (h *hc) OnlineSince() time.Duration {
