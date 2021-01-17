@@ -35,13 +35,15 @@ type importation struct {
 	http            httpclient.HTTPClient
 	importationRepo repository.Import
 	productsRepo    repository.Product
+	hcService       Healthcheck
 }
 
 // NewImportation ...
-func NewImportation(http httpclient.HTTPClient, i repository.Import) Importation {
+func NewImportation(http httpclient.HTTPClient, h Healthcheck, i repository.Import) Importation {
 	return &importation{
 		http:            http,
 		importationRepo: i,
+		hcService:       h,
 	}
 }
 
@@ -111,7 +113,6 @@ func (i *importation) ImportFiles(filenames []models.Import) error {
 	}
 
 	wg.Wait()
-
 	if len(errChan) > 0 {
 		return <-errChan
 	}

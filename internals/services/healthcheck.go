@@ -2,6 +2,8 @@ package services
 
 import (
 	"context"
+	"go-challenge/internals/models"
+	"go-challenge/internals/repository"
 	"runtime"
 	"time"
 
@@ -19,20 +21,19 @@ type Healthcheck interface {
 
 	SetOnlineSince(time.Time)
 	OnlineSince() time.Duration
-
-	SetLastSync(time.Time)
 }
 
 type hc struct {
-	lastSync    time.Time
 	onlineSince time.Time
 	mongo       *mongo.Database
+	importRepo  repository.Import
 }
 
 // NewHealthcheck returns an implementation of Healthcheck interface
-func NewHealthcheck(m *mongo.Database) Healthcheck {
+func NewHealthcheck(m *mongo.Database, i repository.Import) Healthcheck {
 	return &hc{
-		mongo: m,
+		mongo:      m,
+		importRepo: i,
 	}
 }
 
@@ -80,7 +81,18 @@ func (h *hc) DatabaseReady() (bool, error) {
 }
 
 func (h *hc) LastSyncExecution() time.Time {
-	return h.lastSync
+	var err error
+	var imp *models.Import
+
+	if imp, err = h.importRepo.GetLastImport(); err != nil {
+		return time.Time{}
+	}
+
+	if imp == nil {
+		return time.Time{}
+	}
+
+	return time.Unix(imp.ImportedT, 0)
 }
 
 func (h *hc) GetMemUsage() uint64 {
@@ -92,10 +104,6 @@ func (h *hc) GetMemUsage() uint64 {
 
 func (h *hc) SetOnlineSince(t time.Time) {
 	h.onlineSince = t
-}
-
-func (h *hc) SetLastSync(t time.Time) {
-	h.lastSync = t
 }
 
 func (h *hc) OnlineSince() time.Duration {

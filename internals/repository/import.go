@@ -6,11 +6,13 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Import repository interface will abstract
 // the interations with database
 type Import interface {
+	GetLastImport() (*models.Import, error)
 	GetAllImports() ([]models.Import, error)
 	ExecuteImport(*models.Import, []interface{}) error
 }
@@ -30,6 +32,24 @@ func NewImportRepository(m *mongo.Database, p Product) Import {
 		mongo:       m,
 		productRepo: p,
 	}
+}
+
+func (i *importation) GetLastImport() (*models.Import, error) {
+	ctx, cancel := createContext()
+	defer cancel()
+
+	findOpts := options.FindOne()
+	findOpts.SetSort(bson.D{{"imported_t", -1}})
+
+	var err error
+	imp := new(models.Import)
+
+	result := i.mongo.Collection(ImportsCollection).FindOne(ctx, bson.D{}, findOpts)
+	if err = result.Decode(imp); err != nil {
+		return nil, err
+	}
+
+	return imp, nil
 }
 
 func (i *importation) GetAllImports() ([]models.Import, error) {
