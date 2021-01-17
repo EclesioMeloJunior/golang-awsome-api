@@ -25,7 +25,8 @@ func main() {
 		),
 
 		fx.Provide(
-			repository.NewImportation,
+			repository.NewProductRespository,
+			repository.NewImportRepository,
 		),
 
 		fx.Provide(

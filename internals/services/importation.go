@@ -9,8 +9,11 @@ import (
 	"go-challenge/internals/repository"
 	"go-challenge/pkg/httpclient"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
+	"sync"
+	"time"
 )
 
 // Importation defines the abstraction of
@@ -18,7 +21,7 @@ import (
 type Importation interface {
 	GetFilenames() ([]string, error)
 	ToBeImported([]string) ([]models.Import, error)
-	ImportFiles([]models.Import) ([]models.Product, error)
+	ImportFiles([]models.Import) error
 }
 
 // ...
@@ -30,12 +33,12 @@ const (
 
 type importation struct {
 	http            httpclient.HTTPClient
-	importationRepo repository.Importation
+	importationRepo repository.Import
 	productsRepo    repository.Product
 }
 
 // NewImportation ...
-func NewImportation(http httpclient.HTTPClient, i repository.Importation) Importation {
+func NewImportation(http httpclient.HTTPClient, i repository.Import) Importation {
 	return &importation{
 		http:            http,
 		importationRepo: i,
@@ -83,71 +86,108 @@ func (i *importation) ToBeImported(filenames []string) ([]models.Import, error) 
 		if i == nil {
 			toBeImported = append(toBeImported, models.Import{
 				Filename: file,
-				Imported: false,
-				StopedAt: -1,
 			})
 
 			continue
 		}
-
-		if !i.Imported || i.StopedAt != -1 {
-			toBeImported = append(toBeImported, *i)
-		}
-	}
-
-	for _, i := range imports {
-		if i.Imported {
-			continue
-		}
-
-		toBeImported = append(toBeImported, i)
 	}
 
 	return toBeImported, nil
 }
 
-func (i *importation) ImportFiles(filenames []models.Import) ([]models.Product, error) {
+func (i *importation) ImportFiles(filenames []models.Import) error {
+	if len(filenames) < 1 {
+		return nil
+	}
+
+	errChan := make(chan error, len(filenames))
+	defer close(errChan)
+
+	wg := sync.WaitGroup{}
+
+	for _, filename := range filenames {
+		wg.Add(1)
+		go i.retrieveAndImport(filename, &wg, errChan)
+	}
+
+	wg.Wait()
+
+	if len(errChan) > 0 {
+		return <-errChan
+	}
+
+	return nil
+}
+
+func (i *importation) retrieveAndImport(imp models.Import, wg *sync.WaitGroup, errChan chan<- error) {
+	defer wg.Done()
+
 	var err error
 	var request *http.Request
 
-	if request, err = createRequest(fmt.Sprintf(OpenFoodFactsData, filenames[0].Filename)); err != nil {
-		return nil, err
+	url := fmt.Sprintf(OpenFoodFactsData, imp.Filename)
+	if request, err = createRequest(url); err != nil {
+		errChan <- createError(imp, err)
+		return
 	}
 
+	log.Printf("Request to %s started: %s\n", imp.Filename, url)
 	var response *http.Response
 	if response, err = i.http.Do(request); err != nil {
-		return nil, err
+		errChan <- createError(imp, err)
+		return
 	}
 
 	var jsonGz *gzip.Reader
 	defer response.Body.Close()
 	if jsonGz, err = gzip.NewReader(response.Body); err != nil {
-		return nil, err
+		errChan <- createError(imp, err)
+		return
 	}
 
 	var bodyBytes []byte
 	if bodyBytes, err = ioutil.ReadAll(jsonGz); err != nil {
-		return nil, err
+		errChan <- createError(imp, err)
+		return
 	}
 
-	productsToImport := make([]models.Product, 0)
-	splitedContent := bytes.Split(bytes.Trim(bodyBytes, "\n"), []byte("\n"))
+	dataRows := bytes.Split(bytes.Trim(bodyBytes, "\n"), []byte("\n"))
+	log.Printf("Amount of data to %s: %v\n", imp.Filename, len(dataRows))
 
-	for _, content := range splitedContent[:MaxRange] {
+	if len(dataRows) > MaxRange {
+		dataRows = dataRows[:MaxRange]
+	}
+
+	log.Printf("Amount of data to %s after cut: %v\n", imp.Filename, len(dataRows))
+
+	productsToInsert := make([]interface{}, 0)
+
+	for _, content := range dataRows {
 		p := models.Product{}
 
 		if err = json.Unmarshal(content, &p); err != nil {
-			return nil, err
+			errChan <- createError(imp, err)
+			return
 		}
 
-		if err != nil {
-			return nil, err
-		}
-
-		productsToImport = append(productsToImport, p)
+		p.Status = models.Published
+		p.ImportedT = time.Now().Unix()
+		productsToInsert = append(productsToInsert, p)
 	}
 
-	return productsToImport, nil
+	imp.ImportedT = time.Now().Unix()
+	imp.Quantity = len(productsToInsert)
+
+	log.Printf("Import of data to %s started: %v products\n", imp.Filename, len(productsToInsert))
+
+	if err = i.importationRepo.ExecuteImport(&imp, productsToInsert); err != nil {
+		errChan <- createError(imp, err)
+		return
+	}
+}
+
+func createError(imp models.Import, err error) error {
+	return fmt.Errorf("error while importing %s: %v", imp.Filename, err)
 }
 
 func createRequest(addr string) (*http.Request, error) {

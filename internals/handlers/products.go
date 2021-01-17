@@ -31,11 +31,11 @@ func (p *Products) Import(e echo.Context) error {
 		return e.String(http.StatusInternalServerError, err.Error())
 	}
 
-	product, err := p.importationService.ImportFiles(imports)
+	err = p.importationService.ImportFiles(imports)
 
 	if err != nil {
 		return e.String(http.StatusInternalServerError, err.Error())
 	}
 
-	return e.JSON(http.StatusOK, product)
+	return e.String(http.StatusOK, "Imported")
 }
