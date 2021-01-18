@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"go-challenge/config"
 	"go-challenge/internals/services"
 	"log"
 	"time"
@@ -11,13 +12,12 @@ import (
 )
 
 // NewServer returns a pointer to Server
-func NewServer(lc fx.Lifecycle, h services.Healthcheck) *echo.Echo {
+func NewServer(lc fx.Lifecycle, c *config.Config, h services.Healthcheck) *echo.Echo {
 	e := echo.New()
 
 	lc.Append(fx.Hook{
 		OnStart: func(context.Context) error {
 			h.SetOnlineSince(time.Now())
-
 			go e.Start(":8080")
 			return nil
 		},

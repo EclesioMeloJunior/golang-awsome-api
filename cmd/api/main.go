@@ -8,6 +8,7 @@ import (
 	"go-challenge/config"
 	"go-challenge/database"
 	"go-challenge/internals/handlers"
+	"go-challenge/internals/notification"
 	"go-challenge/internals/repository"
 	"go-challenge/internals/services"
 	"go-challenge/pkg/httpclient"
@@ -22,6 +23,8 @@ func main() {
 			config.NewConfig,
 			database.NewConnection,
 			httpclient.NewHTTPClient,
+			notification.NewEmailer,
+			notification.NewImportationNotifier,
 		),
 
 		fx.Provide(
@@ -38,6 +41,7 @@ func main() {
 		),
 
 		fx.Invoke(
+			server.ImportJob,
 			server.NewRegister,
 		),
 	)

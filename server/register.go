@@ -10,8 +10,5 @@ import (
 // request endpoint handlers and inject
 // the necessary dependecies
 func NewRegister(e *echo.Echo, hc *handlers.Healthcheck, p *handlers.Products) {
-
 	e.GET("/", hc.GetAPIStatus)
-	e.GET("/import", p.Import)
-
 }
