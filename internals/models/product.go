@@ -45,8 +45,12 @@ func (p *productID) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	(*p) = productID(objID)
+	(*p) = productID(primitive.ObjectID(objID))
 	return nil
+}
+
+func (p *productID) MarshalJSON() ([]byte, error) {
+	return primitive.ObjectID(*p).MarshalJSON()
 }
 
 // Product defines the model from

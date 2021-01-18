@@ -1,6 +1,9 @@
 package notification
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 // Importation interface will abstracts some specific
 // notification actions
@@ -21,6 +24,8 @@ func NewImportationNotifier(e Emailer) Importation {
 }
 
 func (i *importation) NotifySuccess(message string) error {
+	log.Printf("[SUCCESS] Import: %s\n", message)
+
 	notify := "eclesiomelo.1@gmail.com"
 	subject := "Successful import"
 	emailTemplate := `
@@ -37,6 +42,8 @@ func (i *importation) NotifySuccess(message string) error {
 }
 
 func (i *importation) NotifyFail(err error) error {
+	log.Printf("[FAIL] Import: %v\n", err)
+
 	notify := "eclesiomelo.1@gmail.com"
 	subject := "Importation was failed"
 	emailTemplate := `

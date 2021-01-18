@@ -20,7 +20,7 @@ type client struct {
 func NewHTTPClient() HTTPClient {
 	return &client{
 		Client: &http.Client{
-			Timeout: 120 * time.Second,
+			Timeout: 240 * time.Second,
 		},
 	}
 }

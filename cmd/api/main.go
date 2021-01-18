@@ -35,8 +35,11 @@ func main() {
 		fx.Provide(
 			services.NewHealthcheck,
 			services.NewImportation,
+			services.NewProduct,
+
 			handlers.NewHealthcheckHandler,
 			handlers.NewProductsHandler,
+
 			server.NewServer,
 		),
 

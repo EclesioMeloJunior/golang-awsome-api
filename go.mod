@@ -8,4 +8,5 @@ require (
 	github.com/robfig/cron/v3 v3.0.0
 	go.mongodb.org/mongo-driver v1.4.4
 	go.uber.org/fx v1.13.1
+	k8s.io/kube-openapi v0.0.0-20210113233702-8566a335510f
 )

@@ -1,41 +1,36 @@
 package handlers
 
 import (
+	"go-challenge/internals/models"
 	"go-challenge/internals/services"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
-// Products ...
+// Products is a struct that has the product service dependency
 type Products struct {
-	importationService services.Importation
+	productService services.Product
 }
 
-// NewProductsHandler ...
-func NewProductsHandler(importationService services.Importation) *Products {
-	return &Products{importationService}
+// NewProductsHandler will return a pointer to Product
+// at construction will inject te product service dependency
+func NewProductsHandler(p services.Product) *Products {
+	return &Products{
+		productService: p,
+	}
 }
 
-// Import ...
-func (p *Products) Import(e echo.Context) error {
-	filenames, err := p.importationService.GetFilenames()
+// GetProductsList will return a list with products
+func (p *Products) GetProductsList(c echo.Context) error {
+	page, size := getPagination(c)
 
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, err)
+	var err error
+	var products []models.Product
+
+	if products, err = p.productService.GetProducts(nil, page, size); err != nil {
+		return c.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
-	imports, err := p.importationService.ToBeImported(filenames)
-
-	if err != nil {
-		return e.String(http.StatusInternalServerError, err.Error())
-	}
-
-	err = p.importationService.ImportFiles(imports)
-
-	if err != nil {
-		return e.String(http.StatusInternalServerError, err.Error())
-	}
-
-	return e.String(http.StatusOK, "Imported")
+	return c.JSON(http.StatusOK, successResponse(products))
 }
