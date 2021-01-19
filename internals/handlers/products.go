@@ -8,6 +8,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Products is a struct that has the product service dependency
@@ -30,7 +31,9 @@ func (p *Products) GetProductsList(c echo.Context) error {
 	var err error
 	var products []models.Product
 
-	if products, err = p.productService.GetProducts(nil, page, size); err != nil {
+	products, err = p.productService.GetProducts(nil, page, size)
+
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
@@ -44,7 +47,13 @@ func (p *Products) GetProductByID(c echo.Context) error {
 	var err error
 	var product *models.Product
 
-	if product, err = p.productService.GetProductByID(productID); err != nil {
+	product, err = p.productService.GetProductByID(productID)
+
+	if err == mongo.ErrNoDocuments {
+		return c.JSON(http.StatusNoContent, nil)
+	}
+
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse(err))
 	}
 
@@ -77,7 +86,36 @@ func (p *Products) UpdateProductByID(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errorResponse(err))
 	}
 
+	if product.Status != "" {
+		err = errors.New("Invalid body data: status")
+		return c.JSON(http.StatusBadRequest, errorResponse(err))
+	}
+
 	product, err = p.productService.UpdateProductByID(productID, product)
+
+	if err == mongo.ErrNoDocuments {
+		return c.JSON(http.StatusNoContent, nil)
+	}
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errorResponse(err))
+	}
+
+	return c.JSON(http.StatusOK, successResponse(product))
+}
+
+// RemoveProductByID will find and update the product status to "trash"
+func (p *Products) RemoveProductByID(c echo.Context) error {
+	productID := c.Param("pcode")
+
+	var err error
+	var product *models.Product
+
+	product, err = p.productService.DeleteProductByID(productID)
+
+	if err == mongo.ErrNoDocuments {
+		return c.JSON(http.StatusNoContent, nil)
+	}
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorResponse(err))

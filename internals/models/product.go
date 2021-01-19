@@ -58,3 +58,8 @@ type Product struct {
 	MainCategory    string             `json:"main_category,omitempty" bson:"main_category,omitempty"`
 	ImageURL        string             `json:"image_url,omitempty" bson:"image_url,omitempty"`
 }
+
+// ToTrash updates the product status to "trash"
+func (p *Product) ToTrash() {
+	p.Status = Trash
+}

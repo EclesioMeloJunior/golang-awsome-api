@@ -16,9 +16,11 @@ type Product interface {
 	UpdateProductByID(primitive.ObjectID, interface{}) error
 	UpdateProductByCode(string, interface{}) error
 
+	GetOne(filter interface{}) (*models.Product, error)
 	GetProductByCode(string) (*models.Product, error)
 	GetProductByID(primitive.ObjectID) (*models.Product, error)
 	GetProducts(filter interface{}, page int, size int) ([]models.Product, error)
+
 	InsertManyProducts([]interface{}, mongo.Session) error
 }
 
@@ -63,17 +65,17 @@ func (p *product) GetProducts(filter interface{}, page int, size int) ([]models.
 	return products, nil
 }
 
-func (p *product) GetProductByID(objID primitive.ObjectID) (*models.Product, error) {
+func (p *product) GetOne(filter interface{}) (*models.Product, error) {
 	ctx, cancel := createContext()
 	defer cancel()
 
 	r := p.Database.
 		Collection(ProductsCollection).
-		FindOne(ctx, bson.M{"_id": objID})
-
-	var product *models.Product
+		FindOne(ctx, filter)
 
 	var err error
+	var product *models.Product
+
 	if err = r.Decode(&product); err != nil {
 		return nil, err
 	}
@@ -81,22 +83,14 @@ func (p *product) GetProductByID(objID primitive.ObjectID) (*models.Product, err
 	return product, nil
 }
 
+func (p *product) GetProductByID(objID primitive.ObjectID) (*models.Product, error) {
+	filter := bson.M{"_id": objID}
+	return p.GetOne(filter)
+}
+
 func (p *product) GetProductByCode(code string) (*models.Product, error) {
-	ctx, cancel := createContext()
-	defer cancel()
-
-	r := p.Database.
-		Collection(ProductsCollection).
-		FindOne(ctx, bson.M{"code": code})
-
-	var err error
-	var product *models.Product
-
-	if err = r.Decode(&product); err != nil {
-		return nil, err
-	}
-
-	return product, nil
+	filter := bson.M{"code": code}
+	return p.GetOne(filter)
 }
 
 func (p *product) InsertManyProducts(products []interface{}, session mongo.Session) error {
@@ -112,16 +106,6 @@ func (p *product) InsertManyProducts(products []interface{}, session mongo.Sessi
 
 		return nil
 	})
-}
-
-func (p *product) UpdateProductByID(id primitive.ObjectID, product interface{}) error {
-	filter := bson.M{"_id": id}
-	return p.UpdateOne(filter, product)
-}
-
-func (p *product) UpdateProductByCode(code string, product interface{}) error {
-	filter := bson.M{"code": code}
-	return p.UpdateOne(filter, product)
 }
 
 func (p *product) UpdateOne(filter interface{}, data interface{}) error {
@@ -146,4 +130,14 @@ func (p *product) UpdateOne(filter interface{}, data interface{}) error {
 	}
 
 	return nil
+}
+
+func (p *product) UpdateProductByID(id primitive.ObjectID, product interface{}) error {
+	filter := bson.M{"_id": id}
+	return p.UpdateOne(filter, product)
+}
+
+func (p *product) UpdateProductByCode(code string, product interface{}) error {
+	filter := bson.M{"code": code}
+	return p.UpdateOne(filter, product)
 }

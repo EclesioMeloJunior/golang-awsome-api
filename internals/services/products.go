@@ -13,6 +13,7 @@ type Product interface {
 	GetProducts(filter interface{}, page int, size int) ([]models.Product, error)
 	GetProductByID(string) (*models.Product, error)
 	UpdateProductByID(string, *models.Product) (*models.Product, error)
+	DeleteProductByID(string) (*models.Product, error)
 }
 
 type product struct {
@@ -57,4 +58,17 @@ func (p *product) UpdateProductByID(id string, update *models.Product) (*models.
 	}
 
 	return p.GetProductByID(id)
+}
+
+func (p *product) DeleteProductByID(id string) (*models.Product, error) {
+	var err error
+	var product *models.Product
+
+	if product, err = p.GetProductByID(id); err != nil {
+		return nil, err
+	}
+
+	product.ToTrash()
+
+	return p.UpdateProductByID(id, product)
 }

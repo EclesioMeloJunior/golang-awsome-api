@@ -14,7 +14,7 @@ func NewRegister(e *echo.Echo, hc *handlers.Healthcheck, p *handlers.Products) {
 
 	e.GET("/products/:pcode", p.GetProductByID)
 	e.PUT("/products/:pcode", p.UpdateProductByID)
-	e.DELETE("/products/:pcode", p.GetProductByID)
+	e.DELETE("/products/:pcode", p.RemoveProductByID)
 
 	e.GET("/products", p.GetProductsList)
 }
