@@ -30,54 +30,31 @@ func (p *productFloat) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type productID primitive.ObjectID
-
-func (p *productID) UnmarshalJSON(data []byte) error {
-	if len(string(data)) != 24 {
-		(*p) = productID(primitive.NewObjectID())
-		return nil
-	}
-
-	var err error
-	var objID primitive.ObjectID
-
-	if objID, err = primitive.ObjectIDFromHex(string(data)); err != nil {
-		return err
-	}
-
-	(*p) = productID(primitive.ObjectID(objID))
-	return nil
-}
-
-func (p *productID) MarshalJSON() ([]byte, error) {
-	return primitive.ObjectID(*p).MarshalJSON()
-}
-
 // Product defines the model from
 // OpenFoodFacts and the model that will be inserted at db
 type Product struct {
-	ID              productID     `json:"_id" bson:"_id,omitempty"`
-	Code            string        `json:"code" bson:"code"`
-	Status          ProductStatus `json:"status" bson:"status"`
-	ImportedT       int64         `json:"imported_t" bson:"imported_t"`
-	URL             string        `json:"url" bson:"url"`
-	Creator         string        `json:"creator" bson:"creator"`
-	CreatedT        int           `json:"created_t" bson:"created_t"`
-	LastModifiedT   int           `json:"last_modified_t" bson:"last_modified_t"`
-	ProductName     string        `json:"product_name" bson:"product_name"`
-	Quantity        string        `json:"quantity" bson:"quantity"`
-	Brands          string        `json:"brands" bson:"brands"`
-	Categories      string        `json:"categories" bson:"categories"`
-	Labels          string        `json:"labels" bson:"labels"`
-	Cities          string        `json:"cities" bson:"cities"`
-	PurchasePlaces  string        `json:"purchase_places" bson:"purchase_places"`
-	Stores          string        `json:"stores" bson:"stores"`
-	IngredientsText string        `json:"ingredients_text" bson:"ingredients_text"`
-	Traces          string        `json:"traces" bson:"traces"`
-	ServingSize     string        `json:"serving_size" bson:"serving_size"`
-	ServingQuantity productFloat  `json:"serving_quantity" bson:"serving_quantity"`
-	NutriscoreScore int           `json:"nutriscore_score" bson:"nutriscore_score"`
-	NutriscoreGrage string        `json:"nutriscore_grade" bson:"nutriscore_grade"`
-	MainCategory    string        `json:"main_category" bson:"main_category"`
-	ImageURL        string        `json:"image_url" bson:"image_url"`
+	ID              primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"`
+	Code            string             `json:"code,omitempty" bson:"code,omitempty"`
+	Status          ProductStatus      `json:"status,omitempty" bson:"status,omitempty"`
+	ImportedT       int64              `json:"imported_t,omitempty" bson:"imported_t,omitempty"`
+	URL             string             `json:"url,omitempty" bson:"url,omitempty"`
+	Creator         string             `json:"creator,omitempty" bson:"creator,omitempty"`
+	CreatedT        int                `json:"created_t,omitempty" bson:"created_t,omitempty"`
+	LastModifiedT   int                `json:"last_modified_t,omitempty" bson:"last_modified_t,omitempty"`
+	ProductName     string             `json:"product_name,omitempty" bson:"product_name,omitempty"`
+	Quantity        string             `json:"quantity,omitempty" bson:"quantity,omitempty"`
+	Brands          string             `json:"brands,omitempty" bson:"brands,omitempty"`
+	Categories      string             `json:"categories,omitempty" bson:"categories,omitempty"`
+	Labels          string             `json:"labels,omitempty" bson:"labels,omitempty"`
+	Cities          string             `json:"cities,omitempty" bson:"cities,omitempty"`
+	PurchasePlaces  string             `json:"purchase_places,omitempty" bson:"purchase_places,omitempty"`
+	Stores          string             `json:"stores,omitempty" bson:"stores,omitempty"`
+	IngredientsText string             `json:"ingredients_text,omitempty" bson:"ingredients_text,omitempty"`
+	Traces          string             `json:"traces,omitempty" bson:"traces,omitempty"`
+	ServingSize     string             `json:"serving_size,omitempty" bson:"serving_size,omitempty"`
+	ServingQuantity productFloat       `json:"serving_quantity,omitempty" bson:"serving_quantity,omitempty"`
+	NutriscoreScore int                `json:"nutriscore_score,omitempty" bson:"nutriscore_score,omitempty"`
+	NutriscoreGrage string             `json:"nutriscore_grade,omitempty" bson:"nutriscore_grade,omitempty"`
+	MainCategory    string             `json:"main_category,omitempty" bson:"main_category,omitempty"`
+	ImageURL        string             `json:"image_url,omitempty" bson:"image_url,omitempty"`
 }

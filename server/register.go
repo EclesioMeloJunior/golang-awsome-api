@@ -11,5 +11,10 @@ import (
 // the necessary dependecies
 func NewRegister(e *echo.Echo, hc *handlers.Healthcheck, p *handlers.Products) {
 	e.GET("/", hc.GetAPIStatus)
+
+	e.GET("/products/:pcode", p.GetProductByID)
+	e.PUT("/products/:pcode", p.UpdateProductByID)
+	e.DELETE("/products/:pcode", p.GetProductByID)
+
 	e.GET("/products", p.GetProductsList)
 }

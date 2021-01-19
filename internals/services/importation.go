@@ -166,6 +166,8 @@ func (i *importation) retrieveAndImport(imp models.Import, wg *sync.WaitGroup, e
 	for _, content := range dataRows {
 		p := models.Product{}
 
+		content = bytes.Replace(content, []byte("_id"), []byte("_exported_id"), -1)
+
 		if err = json.Unmarshal(content, &p); err != nil {
 			errChan <- createError(imp, err)
 			return
