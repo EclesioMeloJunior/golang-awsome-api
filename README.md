@@ -44,7 +44,7 @@ or if you have make bin installed at your machine you can run:
 make docker
 ```
 
-Then the application will be running at http://localhost:8080
+Then the application will be running at http://localhost:8080, and documentation at http://localhost:8080/swagger/index.html
 
 
 ### Without docker
@@ -63,4 +63,19 @@ or if you have make bin installed at your machine you can run:
 make run
 ```
 
-Then the application will be running at http://localhost:8080
+Then the application will be running at http://localhost:8080, and documentation at http://localhost:8080/swagger/index.html
+
+
+## Testing
+
+Ginko and Gomega are the tool used in this projects to create and run test to execute the tests you can type:
+
+```sh
+go test ./... -v
+```
+
+or 
+
+```sh
+make test
+```
