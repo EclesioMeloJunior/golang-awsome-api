@@ -6,7 +6,9 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type response struct {
+// Response will define the api contract
+// the api reponse
+type Response struct {
 	Message string      `json:"message,omitempty"`
 	Body    interface{} `json:"data,omitempty"`
 	Success bool        `json:"success"`
@@ -33,16 +35,16 @@ func getPagination(c echo.Context) (int, int) {
 	return page, size
 }
 
-func errorResponse(err error) *response {
-	return &response{
+func errorResponse(err error) *Response {
+	return &Response{
 		Body:    nil,
 		Success: false,
 		Message: err.Error(),
 	}
 }
 
-func successResponse(data interface{}) *response {
-	return &response{
+func successResponse(data interface{}) *Response {
+	return &Response{
 		Body:    data,
 		Success: true,
 	}
