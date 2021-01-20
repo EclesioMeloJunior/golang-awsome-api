@@ -22,11 +22,11 @@ The above command will start the database at port 27017 and the visualization at
 ## Running application
 
 To execute the application you must clone the project inside a folder at your machine then you must create a .env file
-at the ***project root**, the file .env.example contains the required envs.
+at the **project root**, the file .env.example contains the required envs.
 
 The env var **CONN_STR** should have the format _mongodb://root:example@localhost:27017/?authSource=admin_
 The env var **DATABASE_NAME** should be _admin_
-The env var **TIME_EXEC_IMPORT** should have the format _* * * *_ (Where the first one represents minutes and the second is the hour) eg. _10 13 * *_ = 13h:10m
+The env var **TIME_EXEC_IMPORT** should have the format _* * * * *_ (Where the first one represents minutes and the second is the hour) eg. _10 13 * * *_ = 13h:10m
 
 The other variables represents the email information to be able notify when import fails or succeed
 
