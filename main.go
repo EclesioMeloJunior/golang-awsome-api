@@ -17,6 +17,17 @@ import (
 	"go.uber.org/fx"
 )
 
+// @title Go Open Food Facts Changelenge
+// @version 1.0
+// @description This project needs to realize synchronization with Open Food Facts open data and allow CRUD operations with data
+// @termsOfService http://swagger.io/terms/
+// @contact.name Eclésio F Melo Júnior
+// @contact.url https://ecles.io
+// @contact.email eclesiomelo.1@gmail.com
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host http://localhost:8080
+// @BasePath /
 func main() {
 	app := fx.New(
 		fx.Provide(

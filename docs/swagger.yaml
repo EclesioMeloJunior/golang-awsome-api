@@ -1,0 +1,215 @@
+basePath: /
+definitions:
+  handlers.Response:
+    properties:
+      data:
+        type: object
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  models.Product:
+    properties:
+      _id:
+        type: string
+      brands:
+        type: string
+      categories:
+        type: string
+      cities:
+        type: string
+      code:
+        type: string
+      created_t:
+        type: integer
+      creator:
+        type: string
+      image_url:
+        type: string
+      imported_t:
+        type: integer
+      ingredients_text:
+        type: string
+      labels:
+        type: string
+      last_modified_t:
+        type: integer
+      main_category:
+        type: string
+      nutriscore_grade:
+        type: string
+      nutriscore_score:
+        type: integer
+      product_name:
+        type: string
+      purchase_places:
+        type: string
+      quantity:
+        type: string
+      serving_quantity:
+        type: integer
+      serving_size:
+        type: string
+      status:
+        type: string
+      stores:
+        type: string
+      traces:
+        type: string
+      url:
+        type: string
+    type: object
+host: http://localhost:8080
+info:
+  contact:
+    email: eclesiomelo.1@gmail.com
+    name: Eclésio F Melo Júnior
+    url: https://ecles.io
+  description: This project needs to realize synchronization with Open Food Facts open data and allow CRUD operations with data
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Go Open Food Facts Changelenge
+  version: "1.0"
+paths:
+  /products:
+    get:
+      consumes:
+      - application/json
+      description: return a list of products imported from Open Food Facts open database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                body:
+                  items:
+                    $ref: '#/definitions/models.Product'
+                  type: array
+                success:
+                  type: boolean
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+      summary: Products List
+  /products/:idOrCode:
+    delete:
+      consumes:
+      - application/json
+      description: Retrive a product by either ID or code and update the status to "trash"
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                body:
+                  $ref: '#/definitions/models.Product'
+                success:
+                  type: boolean
+              type: object
+        "204": {}
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+      summary: Remove One Product
+    get:
+      consumes:
+      - application/json
+      description: return one product found by either ID or Code
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                body:
+                  $ref: '#/definitions/models.Product'
+                success:
+                  type: boolean
+              type: object
+        "204": {}
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+      summary: Get Product By ID or Code
+    put:
+      consumes:
+      - application/json
+      description: Retrive a product by either ID or code and update info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                body:
+                  $ref: '#/definitions/models.Product'
+                success:
+                  type: boolean
+              type: object
+        "204": {}
+        "400":
+          description: Validation fails
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/handlers.Response'
+            - properties:
+                message:
+                  type: string
+                success:
+                  type: boolean
+              type: object
+      summary: Update One Product
+swagger: "2.0"

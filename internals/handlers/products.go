@@ -25,6 +25,13 @@ func NewProductsHandler(p services.Product) *Products {
 }
 
 // GetProductsList will return a list with products
+// @Summary Products List
+// @Description return a list of products imported from Open Food Facts open database
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response{body=[]models.Product,success=bool}
+// @Failure 500 {object} Response{message=string,success=bool}
+// @Router /products [get]
 func (p *Products) GetProductsList(c echo.Context) error {
 	page, size := getPagination(c)
 
@@ -41,6 +48,14 @@ func (p *Products) GetProductsList(c echo.Context) error {
 }
 
 // GetProductByID will find a product by ID or code
+// @Summary Get Product By ID or Code
+// @Description return one product found by either ID or Code
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response{body=models.Product,success=bool}
+// @Success 204
+// @Failure 500 {object} Response{message=string,success=bool}
+// @Router /products/:idOrCode [get]
 func (p *Products) GetProductByID(c echo.Context) error {
 	productID := c.Param("pcode")
 
@@ -61,6 +76,15 @@ func (p *Products) GetProductByID(c echo.Context) error {
 }
 
 // UpdateProductByID will find and update the product by its ID
+// @Summary Update One Product
+// @Description Retrive a product by either ID or code and update info
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response{body=models.Product,success=bool}
+// @Failure 400 {object} Response{message=string,success=bool} "Validation fails"
+// @Success 204
+// @Failure 500 {object} Response{message=string,success=bool}
+// @Router /products/:idOrCode [put]
 func (p *Products) UpdateProductByID(c echo.Context) error {
 	productID := c.Param("pcode")
 
@@ -105,6 +129,14 @@ func (p *Products) UpdateProductByID(c echo.Context) error {
 }
 
 // RemoveProductByID will find and update the product status to "trash"
+// @Summary Remove One Product
+// @Description Retrive a product by either ID or code and update the status to "trash"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} Response{body=models.Product,success=bool}
+// @Success 204
+// @Failure 500 {object} Response{message=string,success=bool}
+// @Router /products/:idOrCode [delete]
 func (p *Products) RemoveProductByID(c echo.Context) error {
 	productID := c.Param("pcode")
 
