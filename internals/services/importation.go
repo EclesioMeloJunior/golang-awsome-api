@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -66,8 +67,11 @@ func (i *importation) GetFilenames() ([]string, error) {
 		return nil, err
 	}
 	filenames := strings.Split(strings.Trim(string(bodyBytes), "\n"), "\n")
+	sort.Strings(filenames)
 
-	return filenames, nil
+	importMostRecent := []string{filenames[0]}
+
+	return importMostRecent, nil
 }
 
 func (i *importation) ToBeImported(filenames []string) ([]models.Import, error) {
