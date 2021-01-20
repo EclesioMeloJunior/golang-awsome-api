@@ -28,7 +28,15 @@ The env var **CONN_STR** should have the format _mongodb://root:example@localhos
 The env var **DATABASE_NAME** should be _admin_
 The env var **TIME_EXEC_IMPORT** should have the format _* * * * *_ (Where the first one represents minutes and the second is the hour) eg. _10 13 * * *_ = 13h:10m
 
-The other variables represents the email information to be able notify when import fails or succeed
+The other variables represents the email information to be able notify when import fails or succeed 
+
+```
+NOTIFY_EMAIL=who_notifies_when_import_job_done@email.com
+EMAIL_USER=creds@email.com
+EMAIL_PASS=pass
+EMAIL_SEVER=smtp.gmail.com //to gmail creds
+EMAIL_PORT=587 //gmail smtp
+```
 
 ### With docker
 
