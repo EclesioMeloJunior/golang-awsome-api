@@ -16,6 +16,7 @@ type Config struct {
 	EmailPass   string `env:"EMAIL_PASS,required"`
 	EmailServer string `env:"EMAIL_SEVER,required"`
 	EmailPort   int    `env:"EMAIL_PORT,required"`
+	NotifyEmail string `env:"NOTIFY_EMAIL,required"`
 }
 
 // NewConfig will parse the necessary env vars to

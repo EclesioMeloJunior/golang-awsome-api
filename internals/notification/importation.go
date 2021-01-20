@@ -2,6 +2,7 @@ package notification
 
 import (
 	"fmt"
+	"go-challenge/config"
 	"log"
 )
 
@@ -15,18 +16,19 @@ type Importation interface {
 
 type importation struct {
 	Emailer
+	c *config.Config
 }
 
 // NewImportationNotifier will return an implementation of Importation
 // interface that uses Emailer
-func NewImportationNotifier(e Emailer) Importation {
-	return &importation{e}
+func NewImportationNotifier(e Emailer, c *config.Config) Importation {
+	return &importation{e, c}
 }
 
 func (i *importation) NotifySuccess(message string) error {
 	log.Printf("[SUCCESS] Import: %s\n", message)
 
-	notify := "eclesiomelo.1@gmail.com"
+	notify := i.c.NotifyEmail
 	subject := "Successful import"
 	emailTemplate := `
 		To: %s

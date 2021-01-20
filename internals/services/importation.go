@@ -69,9 +69,7 @@ func (i *importation) GetFilenames() ([]string, error) {
 	filenames := strings.Split(strings.Trim(string(bodyBytes), "\n"), "\n")
 	sort.Strings(filenames)
 
-	importMostRecent := []string{filenames[0]}
-
-	return importMostRecent, nil
+	return filenames, nil
 }
 
 func (i *importation) ToBeImported(filenames []string) ([]models.Import, error) {
@@ -84,17 +82,17 @@ func (i *importation) ToBeImported(filenames []string) ([]models.Import, error) 
 
 	toBeImported := make([]models.Import, 0)
 
-	for _, file := range filenames {
-		i := getFileInImports(file, imports)
+	for idx := len(filenames) - 1; idx >= 0; idx-- {
+		i := getFileInImports(filenames[idx], imports)
 
 		// if the file is not included at
 		// imports list then create a new Import for it
 		if i == nil {
 			toBeImported = append(toBeImported, models.Import{
-				Filename: file,
+				Filename: filenames[idx],
 			})
 
-			continue
+			break
 		}
 	}
 
